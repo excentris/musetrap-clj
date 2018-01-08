@@ -5,55 +5,68 @@
             [compojure.core :refer [defroutes ANY]]))
 
 (def data {
-  :recipes {:animal_warrior [animals weapons]
-            :humanoid_creature [creatures weapons]}
+  :recipes {:animal_warrior [:animals :weapons]
+            :humanoid_creature [:creatures :weapons]}
   :bundles {:animals ["dog" "cat" "bird" "horse"]
             :creatures ["ork" "werewolf" "troll" "dragon" "goblin"]
-            :weapons ["sword" "axe" "war hammer" "rifle" "pistol"]}})
+            :weapons ["sword" "axe" "war hammer" "rifle" "pistol"]
+            :colors ["red" "green" "blue"]}})
 
 (defn get-ingredient
+  "Get 1 random ingredient from the bundle."
   [bundle]
   (take 1 (repeatedly #(rand-nth bundle))))
 
-(defn get-recipe
-  [recipe_id]
-  (get-in data [:recipes (keyword recipe_id)]))
+(defn get-bundle
+  "Get the vector of ingredients for the specified bundle_id."
+  [bundle_id]
+  (get-in data [:bundles bundle_id]))
 
-(defn cook-recipe
+(defn get-recipe
+  "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
+  [recipe_id]
+  (map get-bundle (get-in data [:recipes (keyword recipe_id)])))
+
+;; TODO refactor the following two functions
+(defn cook-recipe-from-id
   [recipe_id]
   (flatten (map get-ingredient (get-recipe recipe_id))))
 
-;; TODO this function must handle both recipe and bundle params
-(defn cook-improvised-recipe
-  [params]
-  ;; recipe can be either a single recipe_id or a vector of recipe_id
-  (if (vector? (get-in params ["recipe"]))
-    (concat (map cook-recipe (get-in params ["recipe"])))
-    (cook-recipe (get-in params ["recipe"]))))
+(defn cook-recipe-from-vector-of-bundles
+  [vector_of_bundles]
+  (flatten (map get-ingredient (map get-bundle (map keyword vector_of_bundles)))))
 
-(defresource recipe [recipe_id]
-  :available-media-types  ["application/json"]
-  :handle-ok (cook-recipe recipe_id))
+(defn extract-params
+  "Extract a vector of the values for the specified param.
+  This is necessary because params will be either a single string or a vector.
+  This function makes the result of parsing the params uniform."
+  [params param]
+  (flatten (vector (get-in params [param]))))
+
+(defn cook-recipe
+  "When specifying both recipes and bundles, each recipe will be cooked supplemented by all of the bundles"
+  [params]
+  (concat (map #(concat % (cook-recipe-from-vector-of-bundles (extract-params params "bundle"))) 
+               (map cook-recipe-from-id (extract-params params "recipe")))))
 
 (defresource atelier [params]
   :available-media-types  ["application/json"]
-  :handle-ok (cook-improvised-recipe params))
+  :handle-ok (cook-recipe params))
 
 (defresource recipes []
   :available-media-types  ["application/json"]
   :handle-ok (get-in data [:recipes]))
 
+(defresource recipe [recipe_id]
+  :available-media-types  ["application/json"]
+  :handle-ok (get-in data [:recipes (keyword recipe_id)]))
+
 (defroutes app
-  (ANY "/recipes/:recipe_id" [recipe_id] (recipe recipe_id))
   (ANY "/" [] (str "hello"))
   (ANY "/cook" [& params] (atelier params))
+  (ANY "/recipes/:recipe_id" [recipe_id] (recipe recipe_id))
   (ANY "/recipes" [] (recipes)))
 
 (def handler 
   (-> app 
       wrap-params))
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
