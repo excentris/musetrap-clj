@@ -22,31 +22,35 @@
   [bundle_id]
   (get-in data [:bundles bundle_id]))
 
-(defn get-recipe
+(defn get-bundles
+  [vector_of_bundle_ids]
+  (map get-bundle vector_of_bundle_ids))
+
+(defn get-recipe-bundles
   "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
   [recipe_id]
-  (map get-bundle (get-in data [:recipes (keyword recipe_id)])))
+  (get-bundles (get-in data [:recipes recipe_id])))
 
 ;; TODO refactor the following two functions
 (defn cook-recipe-from-id
   [recipe_id]
-  (flatten (map get-ingredient (get-recipe recipe_id))))
+  (flatten (map get-ingredient (get-recipe-bundles recipe_id))))
 
-(defn cook-recipe-from-vector-of-bundles
-  [vector_of_bundles]
-  (flatten (map get-ingredient (map get-bundle (map keyword vector_of_bundles)))))
+(defn cook-recipe-from-bundles
+  [vector_of_bundle_ids]
+  (flatten (map get-ingredient (get-bundles vector_of_bundle_ids))))
 
 (defn extract-params
   "Extract a vector of the values for the specified param.
   This is necessary because params will be either a single string or a vector.
   This function makes the result of parsing the params uniform."
   [params param]
-  (flatten (vector (get-in params [param]))))
+  (map keyword (flatten (vector (get-in params [param])))))
 
 (defn cook-recipe
-  "When specifying both recipes and bundles, each recipe will be cooked supplemented by all of the bundles"
+  "When specifying both recipes and bundles, each recipe will be cooked supplemented by all of the bundles."
   [params]
-  (concat (map #(concat % (cook-recipe-from-vector-of-bundles (extract-params params "bundle"))) 
+  (concat (map #(concat % (cook-recipe-from-bundles (extract-params params "bundle"))) 
                (map cook-recipe-from-id (extract-params params "recipe")))))
 
 (defresource atelier [params]
