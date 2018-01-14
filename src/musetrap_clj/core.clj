@@ -22,14 +22,20 @@
   [bundle_id]
   (get-in data [:bundles bundle_id]))
 
+(defn get-recipe
+  "Get the vector of bundle_id's for the specified recipe_id."
+  [recipe_id]
+  (get-in data [:recipes recipe_id]))
+
 (defn get-bundles
+  "Get a sequence with the vectors of ingrediets for each of the specified bundle id."
   [vector_of_bundle_ids]
   (map get-bundle vector_of_bundle_ids))
 
 (defn get-recipe-bundles
   "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
   [recipe_id]
-  (get-bundles (get-in data [:recipes recipe_id])))
+  (get-bundles (get-recipe recipe_id)))
 
 ;; TODO refactor the following two functions
 (defn cook-recipe-from-id
