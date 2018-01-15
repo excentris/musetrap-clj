@@ -28,7 +28,7 @@
   (get-in data [:recipes recipe_id]))
 
 (defn get-bundles
-  "Get a sequence with the vectors of ingrediets for each of the specified bundle id."
+  "Get a sequence with the vectors of ingredients for each of the specified bundle id."
   [vector_of_bundle_ids]
   (map get-bundle vector_of_bundle_ids))
 
@@ -37,14 +37,9 @@
   [recipe_id]
   (get-bundles (get-recipe recipe_id)))
 
-;; TODO refactor the following two functions
-(defn cook-recipe-from-id
-  [recipe_id]
-  (flatten (map get-ingredient (get-recipe-bundles recipe_id))))
-
-(defn cook-recipe-from-bundles
-  [vector_of_bundle_ids]
-  (flatten (map get-ingredient (get-bundles vector_of_bundle_ids))))
+(defn prepare-ingredients
+  [sequence_of_bundles]
+  (flatten (map get-ingredient sequence_of_bundles)))
 
 (defn extract-params
   "Extract a vector of the values for the specified param.
@@ -54,10 +49,12 @@
   (map keyword (flatten (vector (get-in params [param])))))
 
 (defn cook-recipe
-  "When specifying both recipes and bundles, each recipe will be cooked supplemented by all of the bundles."
+  "When specifying both recipes and bundles, each recipe will be cooked supplemented by all 
+  of the bundles."
   [params]
-  (concat (map #(concat % (cook-recipe-from-bundles (extract-params params "bundle"))) 
-               (map cook-recipe-from-id (extract-params params "recipe")))))
+  (concat (map 
+            #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle")))) 
+            (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
 
 (defresource atelier [params]
   :available-media-types  ["application/json"]
@@ -69,7 +66,7 @@
 
 (defresource recipe [recipe_id]
   :available-media-types  ["application/json"]
-  :handle-ok (get-in data [:recipes (keyword recipe_id)]))
+  :handle-ok (get-in data [:recipes recipe_id]))
 
 (defroutes app
   (ANY "/" [] (str "hello"))
