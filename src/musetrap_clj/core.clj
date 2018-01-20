@@ -40,19 +40,20 @@
             #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle")))) 
             (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
 
-(defresource atelier [params]
+(defresource atelier
+  [params]
   :available-media-types  ["application/json"]
   :handle-ok (cook-recipe params))
 
-(defresource recipes []
+(defresource recipes
+  []
   :available-media-types  ["application/json"]
-  ;; TODO move function call to repo
-  :handle-ok (get-in data [:recipes]))
+  :handle-ok (recipes/list-recipes))
 
-(defresource recipe [recipe_id]
+(defresource recipe
+  [recipe_id]
   :available-media-types  ["application/json"]
-  ;; TODO move function call to repo
-  :handle-ok (get-in data [:recipes recipe_id]))
+  :handle-ok (recipes/describe-recipe (keyword recipe_id)))
 
 (defroutes app
   (ANY "/" [] (str "hello"))

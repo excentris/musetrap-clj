@@ -10,3 +10,14 @@
   [recipe_id]
   (get-in data [:recipes recipe_id]))
 
+(defn list-recipes
+  "List the available recipes."
+  []
+  (get-in data [:recipes]))
+
+(defn describe-recipe
+  "Describe the specified recipe."
+  [recipe_id]
+  (println recipe_id)
+
+  (get-in data [:recipes recipe_id]))
