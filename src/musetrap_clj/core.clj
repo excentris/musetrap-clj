@@ -1,41 +1,25 @@
-(ns musetrap-clj.core
-  (:gen-class)
-  (:require [liberator.core :refer [resource defresource]]
+(ns musetrap-clj.core 
+  (:gen-class) 
+  (:require [liberator.core :refer [resource defresource]] 
             [ring.middleware.params :refer [wrap-params]]
-            [compojure.core :refer [defroutes ANY]]))
-
-(def data {
-  :recipes {:animal_warrior [:animals :weapons]
-            :humanoid_creature [:creatures :weapons]}
-  :bundles {:animals ["dog" "cat" "bird" "horse"]
-            :creatures ["ork" "werewolf" "troll" "dragon" "goblin"]
-            :weapons ["sword" "axe" "war hammer" "rifle" "pistol"]
-            :colors ["red" "green" "blue"]}})
+            [compojure.core :refer [defroutes ANY]]
+            [musetrap-clj.recipe-repository :as recipes]
+            [musetrap-clj.bundle-repository :as bundles]))
 
 (defn get-ingredient
   "Get 1 random ingredient from the bundle."
   [bundle]
   (take 1 (repeatedly #(rand-nth bundle))))
 
-(defn get-bundle
-  "Get the vector of ingredients for the specified bundle_id."
-  [bundle_id]
-  (get-in data [:bundles bundle_id]))
-
-(defn get-recipe
-  "Get the vector of bundle_id's for the specified recipe_id."
-  [recipe_id]
-  (get-in data [:recipes recipe_id]))
-
 (defn get-bundles
   "Get a sequence with the vectors of ingredients for each of the specified bundle id."
   [vector_of_bundle_ids]
-  (map get-bundle vector_of_bundle_ids))
+  (map bundles/get-bundle vector_of_bundle_ids))
 
 (defn get-recipe-bundles
   "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
   [recipe_id]
-  (get-bundles (get-recipe recipe_id)))
+  (get-bundles (recipes/get-recipe recipe_id)))
 
 (defn prepare-ingredients
   [sequence_of_bundles]
@@ -62,10 +46,12 @@
 
 (defresource recipes []
   :available-media-types  ["application/json"]
+  ;; TODO move function call to repo
   :handle-ok (get-in data [:recipes]))
 
 (defresource recipe [recipe_id]
   :available-media-types  ["application/json"]
+  ;; TODO move function call to repo
   :handle-ok (get-in data [:recipes recipe_id]))
 
 (defroutes app
