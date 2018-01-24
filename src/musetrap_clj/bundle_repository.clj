@@ -2,10 +2,10 @@
   (:gen-class))
 
 (def ^:private data {
-  :bundles {:animals ["dog" "cat" "bird" "horse"]
-            :creatures ["ork" "werewolf" "troll" "dragon" "goblin"]
-            :weapons ["sword" "axe" "war hammer" "rifle" "pistol"]
-            :colors ["red" "green" "blue"]}})
+  :bundles {:animals [:dog :cat :bird :horse]
+            :creatures [:ork :werewolf :troll :dragon :goblin]
+            :weapons [:sword :axe :war_hammer :rifle :pistol]
+            :colors [:red :green :blue]}})
 
 (defn get-bundle
   "Get the vector of ingredients for the specified bundle_id."

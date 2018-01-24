@@ -4,7 +4,8 @@
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes ANY]]
             [musetrap-clj.recipe-repository :as recipes]
-            [musetrap-clj.bundle-repository :as bundles]))
+            [musetrap-clj.bundle-repository :as bundles]
+            [musetrap-clj.translator :refer [translate]]))
 
 (defn get-ingredient
   "Get 1 random ingredient from the bundle."
@@ -23,7 +24,9 @@
 
 (defn prepare-ingredients
   [sequence_of_bundles]
-  (flatten (map get-ingredient sequence_of_bundles)))
+  (map 
+    #(translate [:ingredients % :name :en] %)
+    (flatten (map get-ingredient sequence_of_bundles))))
 
 (defn extract-params
   "Extract a vector of the values for the specified param.
@@ -37,7 +40,7 @@
   of the bundles."
   [params]
   (concat (map 
-            #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle")))) 
+            #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle"))))
             (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
 
 (defresource atelier
