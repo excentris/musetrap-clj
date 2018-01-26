@@ -4,7 +4,7 @@
   :description "Tool to provide prompts to ignite your inspiration"
   :url "https://github.com/excentris/musetrap-clj"
   :license {:name "MIT License"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [liberator "0.15.1"]
                  [compojure "1.6.0"]
                  [ring/ring-core "1.6.3"]]
