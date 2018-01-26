@@ -39,6 +39,7 @@
 (defn cook-recipe
   "When specifying both recipes and bundles, each recipe will be cooked supplemented by all 
   of the bundles."
+  ;; TODO this calls extract-params too often
   [params]
   (concat (map 
             #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle"))))
