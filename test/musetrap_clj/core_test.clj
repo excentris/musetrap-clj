@@ -8,10 +8,6 @@
   (testing "getting a random ingredient from a bundle"
     (is (= 1 (count (get-ingredient [:a :b]))))))
 
-(deftest get-bundles-test
-  (testing "we get a sequence of vectors of ingredients"
-    (is (seq? (get-bundles [:animals :colors])))))
-
 (deftest extract-params-test
   (testing "params are correctly converted to keywords"
     (is (keyword? (first (extract-params {"bundle" ["colors" "animals"]} "bundle")))))
