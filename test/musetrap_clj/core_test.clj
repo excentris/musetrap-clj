@@ -2,6 +2,12 @@
   (:require [clojure.test :refer :all]
             [musetrap-clj.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest get-ingredient-test
+  (testing "we actually get a seq"
+    (is (seq? (get-ingredient [:a :b]))))
+  (testing "getting a random ingredient from a bundle"
+    (is (= 1 (count (get-ingredient [:a :b]))))))
+
+(deftest get-bundles-test
+  (testing "we get a sequence of vectors of ingredients"
+    (is (seq? (get-bundles [:a :b])))))
