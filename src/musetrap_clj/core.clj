@@ -12,15 +12,10 @@
   [bundle]
   (take 1 (repeatedly #(rand-nth bundle))))
 
-(defn get-bundles
-  "Get a sequence with the vectors of ingredients for each of the specified bundle id."
-  [vector_of_bundle_ids]
-  (map bundles/get-bundle vector_of_bundle_ids))
-
 (defn get-recipe-bundles
   "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
   [recipe_id]
-  (get-bundles (recipes/get-recipe recipe_id)))
+  (bundles/get-bundles (recipes/get-recipe recipe_id)))
 
 (defn prepare-ingredients
   [sequence_of_bundles]
@@ -41,9 +36,10 @@
   of the bundles."
   ;; TODO this calls extract-params too often
   [params]
-  (concat (map 
-            #(concat % (prepare-ingredients (get-bundles (extract-params params "bundle"))))
-            (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
+  (concat
+    (map 
+      #(concat % (prepare-ingredients (bundles/get-bundles (extract-params params "bundle"))))
+      (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
 
 (defresource atelier
   [params]

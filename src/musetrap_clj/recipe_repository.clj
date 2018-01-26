@@ -18,6 +18,4 @@
 (defn describe-recipe
   "Describe the specified recipe."
   [recipe_id]
-  (println recipe_id)
-
   (get-in data [:recipes recipe_id]))
