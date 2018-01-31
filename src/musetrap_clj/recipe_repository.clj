@@ -1,9 +1,8 @@
 (ns musetrap-clj.recipe-repository
-  (:gen-class))
+  (:require [clojure.java.io :as io]
+            [clojure.edn :as edn]))
 
-(def ^:private data {
-  :recipes {:animal_warrior [:animals :weapons]
-            :humanoid_creature [:creatures :weapons]}})
+(def ^:private data (edn/read-string (slurp (io/resource "data/recipes.edn"))))
 
 (defn get-recipe
   "Get the vector of bundle_id's for the specified recipe_id."

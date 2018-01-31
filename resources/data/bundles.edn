@@ -1,0 +1,4 @@
+{:bundles  {:animals  [:dog :cat :bird :horse]
+            :creatures  [:ork :werewolf :troll :dragon :goblin]
+            :weapons  [:sword :axe :war_hammer :rifle :pistol]
+            :colors  [:red :green :blue]}}

@@ -1,11 +1,9 @@
 (ns musetrap-clj.bundle-repository
-  (:gen-class))
+  (:require [clojure.java.io :as io]
+            [clojure.edn :as edn]))
 
-(def ^:private data {
-  :bundles {:animals [:dog :cat :bird :horse]
-            :creatures [:ork :werewolf :troll :dragon :goblin]
-            :weapons [:sword :axe :war_hammer :rifle :pistol]
-            :colors [:red :green :blue]}})
+
+(def ^:private data (edn/read-string (slurp (io/resource "data/bundles.edn"))))
 
 (defn get-bundle
   "Get the vector of ingredients for the specified bundle_id."
