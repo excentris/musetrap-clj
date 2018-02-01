@@ -9,7 +9,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [liberator "0.15.1"]
                  [compojure "1.6.0"]
-                 [ring/ring-core "1.6.3"]]
+                 [ring/ring-core "1.6.3"]
+                 [ring/ring-jetty-adapter "1.6.3"]]
   :main ^:skip-aot musetrap-clj.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

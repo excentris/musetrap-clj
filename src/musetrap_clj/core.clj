@@ -3,6 +3,7 @@
   (:require [liberator.core :refer [resource defresource]] 
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes ANY]]
+            [ring.adapter.jetty :refer [run-jetty]]
             [musetrap-clj.recipe-repository :as recipes]
             [musetrap-clj.bundle-repository :as bundles]
             [musetrap-clj.translator :refer [translate]]))
@@ -67,6 +68,5 @@
       wrap-params))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (run-jetty handler {:port 8080}))
