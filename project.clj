@@ -12,5 +12,6 @@
                  [ring/ring-core "1.6.3"]
                  [ring/ring-jetty-adapter "1.6.3"]]
   :main ^:skip-aot musetrap-clj.core
+  :uberjar-name "musetrap-clj-standalone.jar"
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
