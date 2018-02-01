@@ -68,5 +68,6 @@
       wrap-params))
 
 (defn -main
-  [& args]
-  (run-jetty handler {:port 8080}))
+  []
+  (let [port  (Integer.  (or  (System/getenv  "PORT")  "8080"))]
+    (run-jetty handler {:port port :join? false})))
