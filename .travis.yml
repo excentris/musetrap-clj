@@ -1,5 +1,9 @@
 language: clojure
-
 after_success:
 - CLOVERAGE_VERSION=1.0.10-SNAPSHOT lein cloverage --codecov
 - bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: heroku
+  app: musetrap-clj
+  api_key:
+    secure: HFxX1eUf5BKlmSW0qnU4Eg3zW1K2hvqMcAZiz6GfyN2L0Dp81wvEsuI8R+eGer/UFvmBRNaljcYvSHwi+1UWG5z8jxOMom3fBMr17d0cnqBry+hF2fdLJfR7UPcCg20RDPb0Ooq66UxnAkYvQqEGxOC549gJLNxGM7K/4gmiDUpmQaQOIGti/8qmKboyqeZgQYzQ+0HHTnghj1k6+6phB8UDmXYGLrQMhPQGNy8XCKCX3ZzLL1ik9Um2VW/T4vFD+K0qFpBu/+UZ7R+zjGyjFwPA7edkQXDNIUDz8IO4IzbdSsBKFbBvgaN7mW1Dul+YQPfZ28pbsGXgfBouJdIbTr0Xv5yQ1iM59/Ad2vH8JFoyYXfdFQDJaDcMLZG01pXkUJ11urJBLxls/gsyWjfiafznTlkjVLFMBlozwGBBI+0Ji2/tBgpf3JRuHFLvtNsa7f2CP+q5h6g1PQjOjzeuxyioEmeJf1o8v2VPgBKZhpekusmEE2y1fRymvanIW0WxLpPbUuTXM24ag5tYNcfO6FV0m732Xq57XmYqjJEC+YrQCQguapttchX7IAocd0ccL8hZxPKkS4Hys2MfuHDzJfcgipa2NwztHuq1tu/l8eL+fyBeFUqTw6eNrAeyEdm/dY5pzAQbFiJApJ9/0uawDFm2hhddhsdeVeGhevFRam4=
