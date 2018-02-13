@@ -6,12 +6,15 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [musetrap-clj.recipe-repository :as recipes]
             [musetrap-clj.bundle-repository :as bundles]
-            [musetrap-clj.translator :refer [translate]]))
+            [musetrap-clj.translator :refer [translate-ingredient]]))
 
 (defn get-ingredient
-  "Get 1 random ingredient from the bundle."
-  [bundle]
-  (take 1 (repeatedly #(rand-nth bundle))))
+  "Get 1 random ingredient from the vector of ingredients. If the vector is empty, return an
+  empty sequence."
+  [vector_of_ingredients]
+  (if-not (empty? vector_of_ingredients)
+    (take 1 (repeatedly #(rand-nth vector_of_ingredients)))
+    (sequence ())))
 
 (defn get-recipe-bundles
   "Get a sequence with the vectors of ingredients for each bundle on the specified recipe_id."
@@ -22,7 +25,7 @@
   [sequence_of_bundles]
   (map 
     ;; TODO parameterize lang
-    #(translate [:ingredients % :name :en] %)
+    #(translate-ingredient [:en %] %)
     (flatten (map get-ingredient sequence_of_bundles))))
 
 (defn extract-params
@@ -30,17 +33,21 @@
   This is necessary because params will be either a single string or a vector.
   This function makes the result of parsing the params uniform."
   [params param]
-  (map keyword (flatten (vector (get-in params [param])))))
+  (let [param-value (get-in params [param])]
+    (if-not (nil? param-value)
+      (map keyword (flatten (vector (get-in params [param]))))
+      (sequence ()))))
 
 (defn cook-recipe
   "When specifying both recipes and bundles, each recipe will be cooked supplemented by all 
   of the bundles."
-  ;; TODO this calls extract-params too often
   [params]
-  (concat
-    (map 
-      #(concat % (prepare-ingredients (bundles/get-bundles (extract-params params "bundle"))))
-      (map prepare-ingredients (map get-recipe-bundles (extract-params params "recipe"))))))
+  (let [requested-bundles (extract-params params "bundle")
+        requested-recipes (extract-params params "recipe")]
+    (concat
+      (map 
+        #(concat % (prepare-ingredients (bundles/get-bundles requested-bundles)))
+        (map prepare-ingredients (map get-recipe-bundles requested-recipes))))))
 
 (defresource atelier
   [params]

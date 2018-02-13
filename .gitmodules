@@ -1,0 +1,3 @@
+[submodule "resources/musetrap-data"]
+	path = resources/musetrap-data
+	url = https://github.com/excentris/musetrap-data

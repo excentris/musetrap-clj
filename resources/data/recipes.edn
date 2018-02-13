@@ -1,2 +1,0 @@
-{:recipes {:animal_warrior [:animals :weapons]
-           :humanoid_creature [:creatures :weapons]}}
