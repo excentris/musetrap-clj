@@ -22,10 +22,10 @@
   (bundles/get-bundles (recipes/get-recipe recipe_id)))
 
 (defn prepare-ingredients
-  [sequence_of_bundles]
+  [sequence_of_bundles lang]
   (map 
     ;; TODO parameterize lang
-    #(translate-ingredient [:en %] %)
+    #(translate-ingredient [lang %] %)
     (flatten (map get-ingredient sequence_of_bundles))))
 
 (defn extract-params
@@ -43,11 +43,12 @@
   of the bundles."
   [params]
   (let [requested-bundles (extract-params params "bundle")
-        requested-recipes (extract-params params "recipe")]
+        requested-recipes (extract-params params "recipe")
+        lang (keyword (get-in params ["lang"] "en"))]
     (concat
       (map 
-        #(concat % (prepare-ingredients (bundles/get-bundles requested-bundles)))
-        (map prepare-ingredients (map get-recipe-bundles requested-recipes))))))
+        #(concat % (prepare-ingredients (bundles/get-bundles requested-bundles) lang))
+        (map #(prepare-ingredients % lang) (map get-recipe-bundles requested-recipes))))))
 
 (defresource atelier
   [params]
