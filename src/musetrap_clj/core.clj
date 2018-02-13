@@ -24,7 +24,6 @@
 (defn prepare-ingredients
   [sequence_of_bundles lang]
   (map 
-    ;; TODO parameterize lang
     #(translate-ingredient [lang %] %)
     (flatten (map get-ingredient sequence_of_bundles))))
 
